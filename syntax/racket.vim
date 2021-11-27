@@ -25,6 +25,13 @@ endif
 " Forms in order of appearance at
 " http://docs.racket-lang.org/reference/index.html
 "
+
+syn region racketDatumComment matchgroup=racketDatumComment start=/#;[ \t\n`']*/ end=/[ \t\n()\[\]";]/me=e-1
+syn region racketDatumComment matchgroup=racketDatumComment start=/#;[ \t\n`']*"/ skip=/\\[\\"]/ end=/"/
+syn region racketDatumComment matchgroup=racketDatumComment start=/#;[ \t\n`']*|/ skip=/\\[\\|]/ end=/|/
+syn region racketDatumComment matchgroup=racketDatumComment start=/#;[ \t\n`']*\(#\([usf]\d\+\)\?\)\?(/ end=/)/ contains=racketDatumCommentForm
+syn region racketDatumCommentForm start="(" end=")" contained contains=racketDatumCommentForm
+
 syn keyword racketSyntax module module* module+ require provide quote
 syn keyword racketSyntax #%datum #%expression #%top #%variable-reference #%app
 syn keyword racketSyntax lambda case-lambda let let* letrec
@@ -610,8 +617,8 @@ syn region racketMultilineComment start=/#|/ end=/|#/ contains=racketMultilineCo
 syn keyword racketTodo FIXME TODO XXX contained
 syntax match racketNote /\CNOTE\ze:\?/ contained
 
-syn cluster racketNormal  add=racketQuoted,racketComment,racketMultilineComment
-syn cluster racketQuotedOrNormal  add=racketComment,racketMultilineComment
+syn cluster racketNormal  add=racketQuoted,racketDatumComment,racketComment,racketMultilineComment
+syn cluster racketQuotedOrNormal  add=racketComment,racketDatumComment,racketMultilineComment
 
 
 " Synchronization and the wrapping up...
@@ -648,6 +655,8 @@ if version >= 508 || !exists("did_racket_syntax_inits")
   HiLink racketConstant           Constant
 
   HiLink racketComment            Comment
+  HiLink racketDatumComment       Comment
+  HiLink racketDatumCommentForm   Comment
   HiLink racketMultilineComment   Comment
   HiLink racketTodo               Todo
   HiLink racketNote               SpecialComment
